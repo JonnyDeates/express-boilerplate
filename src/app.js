@@ -112,7 +112,7 @@ app.post('/user', (req, res) => {
 
     res.send('All validation passed')
         .status(204)
-        .location(`http://localhost:8000/user/${id}`)
+        .location(`http://localhost:8080/user/${id}`)
         .json({id: id});
 });
 
@@ -133,9 +133,20 @@ app.delete('/user/:userId', (req, res) => {
     res.status(204)
         .end();
 });
+app.get(('/user/:userId'), (req, res) => {
+    const { userId } = req.params;
 
-app.get('/user', (req, res) => {
-    res
-        .json(users);
+    const index = users.findIndex(u => u.id === userId);
+
+    // make sure we actually find a user with that id
+    if (index === -1) {
+        return res
+            .status(404)
+            .send('User not found');
+    }
+
+    res.status(200)
+        .json(users[index])
+        .end();
 });
 module.exports = app;
